@@ -4,11 +4,26 @@ from streamlit_authenticator import Authenticate
 import yaml
 from yaml.loader import SafeLoader
 
+
 website_icon = Image.open("images/website_home_page_icon.png")
 
 st.set_page_config(
     page_title="CapConnect",
-    page_icon=website_icon
+    page_icon=website_icon,
+initial_sidebar_state="collapsed"
+)
+
+
+
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
 )
 
 home_page_md = """
@@ -39,6 +54,8 @@ Our goal is to enhance the overall experience for everyone involved in the cance
 """
 
 
+
+
 def user_entry_page(name):
     st.write("# Welcome to CapConnect! 👋")
     st.write(f'### **Welcome *{name}***')
@@ -50,7 +67,6 @@ def user_entry_page(name):
     """)
     st.markdown(home_page_md)
     authenticator.logout('Logout', 'main')
-
 
 
 def med_staff_entry_page(name):
@@ -67,7 +83,6 @@ def med_staff_entry_page(name):
     authenticator.logout('Logout', 'main')
 
 
-
 with open('Database/users.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
@@ -79,13 +94,30 @@ authenticator = Authenticate(
     config['preauthorized'],
 )
 
+def showBar():
+    st.markdown(
+        """
+    <style>
+        [data-testid="collapsedControl"] {
+            display: block
+        }
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )
+
 name, authentication_status, username = authenticator.login('Login', 'main')
 if authentication_status:
     st.session_state["user_type"] = config['credentials']['usernames'][username]['user_type']
     if st.session_state["user_type"] == 'user':
+        # expand the sidebar
         user_entry_page(name)
+        showBar()
+
     elif st.session_state["user_type"] == 'med_staff':
         med_staff_entry_page(name)
+        showBar()
+
 
 
 elif authentication_status == False:
