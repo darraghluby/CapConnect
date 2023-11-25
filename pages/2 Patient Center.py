@@ -18,7 +18,8 @@ if st.sidebar.button('Give my feedback'):
     stars = st_star_rating(label="Please rate you experience"
                            , maxValue=10
                            , defaultValue=0, key="rating",
-                           dark_theme=False)
+                           dark_theme=False
+                           )
 
 
 @st.cache_data
