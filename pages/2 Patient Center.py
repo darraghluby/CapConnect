@@ -1,104 +1,46 @@
+import base64
+
 import streamlit as st
 import pandas as pd
 import pydeck as pdk
 from urllib.error import URLError
 from streamlit_star_rating import st_star_rating
 
+def displayPDF(file):
+    # Opening file from file path
+    with open(file, "rb") as f:
+        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+
+    # Embedding PDF in HTML
+    pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf"></iframe>'
+
+    # Displaying File
+    st.markdown(pdf_display, unsafe_allow_html=True)
+
 st.set_page_config(page_title="Patient Information")
 
 st.markdown("# Patient Feedback and Information")
 st.sidebar.header("Mapping Demo")
 st.write(
-    """This demo shows how to use
-[`st.pydeck_chart`](https://docs.streamlit.io/library/api-reference/charts/st.pydeck_chart)
-to display geospatial data."""
+    """This is the Patient Feedback and Information Center, please choose an option in the sidebar"""
 )
 
 if st.sidebar.button('Give my feedback'):
-    stars = st_star_rating(label="Please rate you experience"
+    stars = st_star_rating(label="Please rate you experience with <Treatment Name>"
                            , maxValue=10
-                           , defaultValue=0, key="rating",
+                           , defaultValue=0, key="rating1",
+                           dark_theme=False
+                           )
+    stars = st_star_rating(label="Please rate you experience with <Hospital Name>"
+                           , maxValue=10
+                           , defaultValue=0, key="rating2",
+                           dark_theme=False
+                           )
+    stars = st_star_rating(label="Please rate you experience with <Consultant Name>"
+                           , maxValue=10
+                           , defaultValue=0, key="rating3",
                            dark_theme=False
                            )
 
-
-@st.cache_data
-def from_data_file(filename):
-    url = (
-            "http://raw.githubusercontent.com/streamlit/"
-            "example-data/master/hello/v1/%s" % filename
-    )
-    return pd.read_json(url)
-
-
-try:
-    ALL_LAYERS = {
-        "Bike Rentals": pdk.Layer(
-            "HexagonLayer",
-            data=from_data_file("bike_rental_stats.json"),
-            get_position=["lon", "lat"],
-            radius=200,
-            elevation_scale=4,
-            elevation_range=[0, 1000],
-            extruded=True,
-        ),
-        "Bart Stop Exits": pdk.Layer(
-            "ScatterplotLayer",
-            data=from_data_file("bart_stop_stats.json"),
-            get_position=["lon", "lat"],
-            get_color=[200, 30, 0, 160],
-            get_radius="[exits]",
-            radius_scale=0.05,
-        ),
-        "Bart Stop Names": pdk.Layer(
-            "TextLayer",
-            data=from_data_file("bart_stop_stats.json"),
-            get_position=["lon", "lat"],
-            get_text="name",
-            get_color=[0, 0, 0, 200],
-            get_size=15,
-            get_alignment_baseline="'bottom'",
-        ),
-        "Outbound Flow": pdk.Layer(
-            "ArcLayer",
-            data=from_data_file("bart_path_stats.json"),
-            get_source_position=["lon", "lat"],
-            get_target_position=["lon2", "lat2"],
-            get_source_color=[200, 30, 0, 160],
-            get_target_color=[200, 30, 0, 160],
-            auto_highlight=True,
-            width_scale=0.0001,
-            get_width="outbound",
-            width_min_pixels=3,
-            width_max_pixels=30,
-        ),
-    }
-    st.sidebar.markdown("### Map Layers")
-    selected_layers = [
-        layer
-        for layer_name, layer in ALL_LAYERS.items()
-        if st.sidebar.checkbox(layer_name, True)
-    ]
-    if selected_layers:
-        st.pydeck_chart(
-            pdk.Deck(
-                map_style="mapbox://styles/mapbox/light-v9",
-                initial_view_state={
-                    "latitude": 37.76,
-                    "longitude": -122.4,
-                    "zoom": 11,
-                    "pitch": 50,
-                },
-                layers=selected_layers,
-            )
-        )
-    else:
-        st.error("Please choose at least one layer above.")
-except URLError as e:
-    st.error(
-        """
-        **This demo requires internet access.**
-        Connection error: %s
-    """
-        % e.reason
-    )
+if st.sidebar.button('Information Center'):
+    displayPDF("/home/djk/Downloads/Paxman-Patient-Brochure-US-WEB.pdf")
