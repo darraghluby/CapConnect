@@ -4,6 +4,7 @@ from streamlit_authenticator import Authenticate
 import yaml
 from yaml.loader import SafeLoader
 
+website_logo = Image.open("images/website_logo.png")
 website_icon = Image.open("images/website_home_page_icon.png")
 
 st.set_page_config(
@@ -11,7 +12,10 @@ st.set_page_config(
     page_icon=website_icon
 )
 
-st.sidebar.success("Select a page above.")
+st.image(website_logo)
+
+login_attempts = 0
+
 
 def user_entry_page(name):
     st.write("# Welcome to CapConnect! 👋")
@@ -23,18 +27,19 @@ def user_entry_page(name):
         CapConnect is a tool for assisting cancer patients and their families.
     """
     )
+
+
 home_page_md = """
-# Welcome to CapConnect!
 
-## Mission:
+### Our Mission
 
-Make the cancer journey more seamless for all stakeholders at all stages of care.
+To make the cancer journey more seamless for all stakeholders at all stages of care.
 
-## Target Audience:
+### Target Audience:
 
 Manufacturers of the cold caps (Paxman Scalp Cooling)
 
-## Our Services:
+### Our Services:
 
 1. **Database Management:**
    - Creating a comprehensive database for monitoring patient health throughout the journey, both pre and post-discharge (Pre-care and Post-care).
@@ -53,6 +58,7 @@ Our goal is to enhance the overall experience for everyone involved in the cance
 
 st.markdown(home_page_md)
 
+
 def med_staff_entry_page(name):
     st.write("# Welcome to Medical CapConnect! 👋")
     st.write(f'Welcome *{name}*')
@@ -66,12 +72,6 @@ def med_staff_entry_page(name):
     )
 
 
-st.set_page_config(
-    page_title="CapConnect",
-    # page_icon="👋",
-)
-
-
 with open('Database/users.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
@@ -83,9 +83,8 @@ authenticator = Authenticate(
     config['preauthorized'],
 )
 
-
-
 name, authentication_status, username = authenticator.login('Login', 'main')
+
 if authentication_status:
     authenticator.logout('Logout', 'main')
     st.session_state["user_type"] = config['credentials']['usernames'][username]['user_type']
@@ -95,10 +94,12 @@ if authentication_status:
         med_staff_entry_page(name)
 
 
-elif authentication_status == False:
-    st.error('Username/password is incorrect')
+elif not authentication_status:
+    if login_attempts > 0:
+        st.error('Username/password is incorrect')
+    login_attempts += 1
 
-elif authentication_status == None:
+
+elif authentication_status is None:
     st.warning('Please enter your username and password')
-
 

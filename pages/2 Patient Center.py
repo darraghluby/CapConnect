@@ -4,7 +4,7 @@ import pydeck as pdk
 from urllib.error import URLError
 from streamlit_star_rating import st_star_rating
 
-st.set_page_config(page_title="Patient Information", page_icon="🏥")
+st.set_page_config(page_title="Patient Information")
 
 st.markdown("# Patient Feedback and Information")
 st.sidebar.header("Mapping Demo")
