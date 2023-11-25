@@ -15,7 +15,6 @@ initial_sidebar_state="collapsed"
 
 st.image(website_logo)
 
-login_attempts = 0
 
 
 
@@ -29,7 +28,7 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-    )
+
 
 
 home_page_md = """
@@ -126,12 +125,6 @@ if authentication_status:
         med_staff_entry_page(name)
         showBar()
 
-
-
-elif not authentication_status:
-    if login_attempts > 0:
-        st.error('Username/password is incorrect')
-    login_attempts += 1
 
 elif authentication_status == None:
     st.warning('Please enter your username and password')
