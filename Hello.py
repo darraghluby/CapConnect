@@ -11,20 +11,7 @@ st.set_page_config(
     page_icon=website_icon
 )
 
-st.sidebar.success("Select a page above.")
-
-def user_entry_page(name):
-    st.write("# Welcome to CapConnect! 👋")
-    st.write(f'Welcome *{name}*')
-    st.sidebar.success("Select a page above.")
-
-    st.markdown(
-        """
-        CapConnect is a tool for assisting cancer patients and their families.
-    """
-    )
 home_page_md = """
-# Welcome to CapConnect!
 
 ## Mission:
 
@@ -51,7 +38,20 @@ Manufacturers of the cold caps (Paxman Scalp Cooling)
 Our goal is to enhance the overall experience for everyone involved in the cancer care process. Through technology, education, and support, Cap-Connect aims to contribute to a more seamless and informed journey for patients, healthcare professionals, and support networks alike.
 """
 
-st.markdown(home_page_md)
+
+def user_entry_page(name):
+    st.write("# Welcome to CapConnect! 👋")
+    st.write(f'### **Welcome *{name}***')
+    st.sidebar.success("Select a page above.")
+
+    st.markdown(
+        """
+        CapConnect is a tool for assisting cancer patients and their families.
+    """)
+    st.markdown(home_page_md)
+    authenticator.logout('Logout', 'main')
+
+
 
 def med_staff_entry_page(name):
     st.write("# Welcome to Medical CapConnect! 👋")
@@ -64,12 +64,8 @@ def med_staff_entry_page(name):
         CapConnect is a tool for assisting cancer patients and their families.
     """
     )
+    authenticator.logout('Logout', 'main')
 
-
-st.set_page_config(
-    page_title="CapConnect",
-    # page_icon="👋",
-)
 
 
 with open('Database/users.yaml') as file:
@@ -83,11 +79,8 @@ authenticator = Authenticate(
     config['preauthorized'],
 )
 
-
-
 name, authentication_status, username = authenticator.login('Login', 'main')
 if authentication_status:
-    authenticator.logout('Logout', 'main')
     st.session_state["user_type"] = config['credentials']['usernames'][username]['user_type']
     if st.session_state["user_type"] == 'user':
         user_entry_page(name)
@@ -100,5 +93,3 @@ elif authentication_status == False:
 
 elif authentication_status == None:
     st.warning('Please enter your username and password')
-
-
