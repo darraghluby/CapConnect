@@ -10,13 +10,10 @@ website_icon = Image.open("images/website_home_page_icon.png")
 st.set_page_config(
     page_title="CapConnect",
     page_icon=website_icon,
-initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed"
 )
 
 st.image(website_logo)
-
-
-
 
 st.markdown(
     """
@@ -28,8 +25,6 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-
 
 home_page_md = """
 
@@ -59,8 +54,6 @@ Our goal is to enhance the overall experience for everyone involved in the cance
 """
 
 
-
-
 def user_entry_page(name):
     st.write("# Welcome to CapConnect! 👋")
     st.write(f'### **Welcome *{name}***')
@@ -72,7 +65,6 @@ def user_entry_page(name):
     """)
     st.markdown(home_page_md)
     authenticator.logout('Logout', 'main')
-
 
 
 def med_staff_entry_page(name):
@@ -100,6 +92,7 @@ authenticator = Authenticate(
     config['preauthorized'],
 )
 
+
 def showBar():
     st.markdown(
         """
@@ -111,6 +104,7 @@ def showBar():
     """,
         unsafe_allow_html=True,
     )
+
 
 name, authentication_status, username = authenticator.login('Login', 'main')
 
@@ -125,10 +119,8 @@ if authentication_status:
         med_staff_entry_page(name)
         showBar()
 
-
-elif authentication_status == None:
-    st.warning('Please enter your username and password')
+elif not authentication_status:
+    st.warning("Please enter a valid password or username")
 
 elif authentication_status is None:
     st.warning('Please enter your username and password')
-
