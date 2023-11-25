@@ -1,33 +1,59 @@
-import streamlit as st
-import time
-import numpy as np
+from Hello import st
+from Hello import Image
 
-st.set_page_config(page_title="Plotting Demo", page_icon="📈")
+st.set_page_config(page_title="Introduction to patient guidance and information")
+image = Image.open("images/cc.png")
 
-st.markdown("# Plotting Demo")
-st.sidebar.header("Plotting Demo")
-st.write(
-    """This demo illustrates a combination of plotting and animation with
-Streamlit. We're generating a bunch of random numbers in a loop for around
-5 seconds. Enjoy!"""
-)
+st.image(image)
 
-progress_bar = st.sidebar.progress(0)
-status_text = st.sidebar.empty()
-last_rows = np.random.randn(1, 1)
-chart = st.line_chart(last_rows)
+text = """
+# Overview of Cold Cap Treatment
 
-for i in range(1, 101):
-    new_rows = last_rows[-1, :] + np.random.randn(5, 1).cumsum(axis=0)
-    status_text.text("%i%% Complete" % i)
-    chart.add_rows(new_rows)
-    progress_bar.progress(i)
-    last_rows = new_rows
-    time.sleep(0.05)
+Provide a concise yet thorough explanation of what cold cap treatment involves, including the purpose, benefits, and potential challenges.
 
-progress_bar.empty()
+## Treatment Process
 
-# Streamlit widgets automatically run the script from top to bottom. Since
-# this button is not connected to any other logic, it just causes a plain
-# rerun.
-st.button("Re-run")
+Outline the step-by-step procedure of using the cold cap, from preparation to post-treatment care. This includes how to wear the cap, the duration of each session, and any specific guidelines to follow.
+
+## Expected Sensations
+
+Describe what sensations patients might experience during the treatment, such as coldness or tightness, to manage expectations and reduce anxiety.
+
+## Hair Care Guidelines
+
+Offer detailed guidance on how to care for the hair before, during, and after treatment. This may include recommendations for gentle hair care products and practices.
+
+## Potential Side Effects
+
+Clearly communicate potential side effects and their likelihood. This includes temporary discomfort, changes in hair texture, and, importantly, the possibility of hair shedding.
+
+## Effectiveness and Success Rates
+
+Share information on the efficacy of cold cap treatment, providing realistic expectations and success rates. This can help patients make informed decisions about their treatment journey.
+
+## Preparation Tips
+
+Offer practical advice on how to prepare for each treatment session, covering aspects like clothing choices, hydration, and any recommended pre-treatment rituals.
+
+## Duration and Frequency
+
+Clearly outline the recommended duration and frequency of cold cap sessions, ensuring patients understand the commitment involved.
+
+## Possible Adjustments
+
+Explain if and how the treatment plan might be adjusted based on individual responses or changing conditions.
+
+## Contact Information and Support
+
+Provide easily accessible contact information for medical professionals and support staff, emphasizing that patients can reach out with any questions or concerns.
+
+## Interactive Features
+
+Include interactive elements such as FAQs, video tutorials, and virtual tours to enhance understanding and engagement.
+
+## Tracking and Progress
+
+Incorporate features for patients to track their treatment progress, offering a sense of control and motivation.
+"""
+
+st.markdown(text)
