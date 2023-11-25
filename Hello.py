@@ -9,7 +9,8 @@ website_icon = Image.open("images/website_home_page_icon.png")
 
 st.set_page_config(
     page_title="CapConnect",
-    page_icon=website_icon
+    page_icon=website_icon,
+initial_sidebar_state="collapsed"
 )
 
 st.image(website_logo)
@@ -17,15 +18,17 @@ st.image(website_logo)
 login_attempts = 0
 
 
-def user_entry_page(name):
-    st.write("# Welcome to CapConnect! 👋")
-    st.write(f'Welcome *{name}*')
-    st.sidebar.success("Select a page above.")
 
-    st.markdown(
-        """
-        CapConnect is a tool for assisting cancer patients and their families.
+st.markdown(
     """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
     )
 
 
@@ -56,7 +59,21 @@ Manufacturers of the cold caps (Paxman Scalp Cooling)
 Our goal is to enhance the overall experience for everyone involved in the cancer care process. Through technology, education, and support, Cap-Connect aims to contribute to a more seamless and informed journey for patients, healthcare professionals, and support networks alike.
 """
 
-st.markdown(home_page_md)
+
+
+
+def user_entry_page(name):
+    st.write("# Welcome to CapConnect! 👋")
+    st.write(f'### **Welcome *{name}***')
+    st.sidebar.success("Select a page above.")
+
+    st.markdown(
+        """
+        CapConnect is a tool for assisting cancer patients and their families.
+    """)
+    st.markdown(home_page_md)
+    authenticator.logout('Logout', 'main')
+
 
 
 def med_staff_entry_page(name):
@@ -70,6 +87,7 @@ def med_staff_entry_page(name):
         CapConnect is a tool for assisting cancer patients and their families.
     """
     )
+    authenticator.logout('Logout', 'main')
 
 
 with open('Database/users.yaml') as file:
@@ -83,15 +101,31 @@ authenticator = Authenticate(
     config['preauthorized'],
 )
 
+def showBar():
+    st.markdown(
+        """
+    <style>
+        [data-testid="collapsedControl"] {
+            display: block
+        }
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )
+
 name, authentication_status, username = authenticator.login('Login', 'main')
 
 if authentication_status:
-    authenticator.logout('Logout', 'main')
     st.session_state["user_type"] = config['credentials']['usernames'][username]['user_type']
     if st.session_state["user_type"] == 'user':
+        # expand the sidebar
         user_entry_page(name)
+        showBar()
+
     elif st.session_state["user_type"] == 'med_staff':
         med_staff_entry_page(name)
+        showBar()
+
 
 
 elif not authentication_status:
@@ -99,6 +133,8 @@ elif not authentication_status:
         st.error('Username/password is incorrect')
     login_attempts += 1
 
+elif authentication_status == None:
+    st.warning('Please enter your username and password')
 
 elif authentication_status is None:
     st.warning('Please enter your username and password')
