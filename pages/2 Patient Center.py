@@ -4,7 +4,7 @@ import pydeck as pdk
 from urllib.error import URLError
 from streamlit_star_rating import st_star_rating
 
-st.set_page_config(page_title="Patient Information", page_icon="🏥")
+st.set_page_config(page_title="Patient Information")
 
 st.markdown("# Patient Feedback and Information")
 st.sidebar.header("Mapping Demo")
@@ -18,7 +18,8 @@ if st.sidebar.button('Give my feedback'):
     stars = st_star_rating(label="Please rate you experience"
                            , maxValue=10
                            , defaultValue=0, key="rating",
-                           dark_theme=False)
+                           dark_theme=False
+                           )
 
 
 @st.cache_data

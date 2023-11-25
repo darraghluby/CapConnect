@@ -4,7 +4,7 @@ from streamlit_authenticator import Authenticate
 import yaml
 from yaml.loader import SafeLoader
 
-
+website_logo = Image.open("images/website_logo.png")
 website_icon = Image.open("images/website_home_page_icon.png")
 
 st.set_page_config(
@@ -12,6 +12,10 @@ st.set_page_config(
     page_icon=website_icon,
 initial_sidebar_state="collapsed"
 )
+
+st.image(website_logo)
+
+login_attempts = 0
 
 
 
@@ -25,18 +29,20 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
+    )
+
 
 home_page_md = """
 
-## Mission:
+### Our Mission
 
-Make the cancer journey more seamless for all stakeholders at all stages of care.
+To make the cancer journey more seamless for all stakeholders at all stages of care.
 
-## Target Audience:
+### Target Audience:
 
 Manufacturers of the cold caps (Paxman Scalp Cooling)
 
-## Our Services:
+### Our Services:
 
 1. **Database Management:**
    - Creating a comprehensive database for monitoring patient health throughout the journey, both pre and post-discharge (Pre-care and Post-care).
@@ -67,6 +73,7 @@ def user_entry_page(name):
     """)
     st.markdown(home_page_md)
     authenticator.logout('Logout', 'main')
+
 
 
 def med_staff_entry_page(name):
@@ -107,6 +114,7 @@ def showBar():
     )
 
 name, authentication_status, username = authenticator.login('Login', 'main')
+
 if authentication_status:
     st.session_state["user_type"] = config['credentials']['usernames'][username]['user_type']
     if st.session_state["user_type"] == 'user':
@@ -120,8 +128,14 @@ if authentication_status:
 
 
 
-elif authentication_status == False:
-    st.error('Username/password is incorrect')
+elif not authentication_status:
+    if login_attempts > 0:
+        st.error('Username/password is incorrect')
+    login_attempts += 1
 
 elif authentication_status == None:
     st.warning('Please enter your username and password')
+
+elif authentication_status is None:
+    st.warning('Please enter your username and password')
+
