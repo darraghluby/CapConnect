@@ -27,7 +27,7 @@ st.sidebar.button('Feedback')
 ic_button = st.sidebar.button('Information Center')
 
 if ic_button:
-    displayPDF("/home/djk/Downloads/Paxman-Patient-Brochure-US-WEB.pdf")
+    displayPDF("./Paxman-Patient-Brochure-US-WEB.pdf")
 else:
     stars = st_star_rating(label="Please rate you experience with Paxman ColdCaps"
                            , maxValue=10
