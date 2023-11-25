@@ -1,5 +1,8 @@
 from PIL import Image
 import streamlit as st
+from streamlit_authenticator import Authenticate
+import yaml
+from yaml.loader import SafeLoader
 
 website_icon = Image.open("images/website_home_page_icon.png")
 
@@ -10,6 +13,16 @@ st.set_page_config(
 
 st.sidebar.success("Select a page above.")
 
+def user_entry_page(name):
+    st.write("# Welcome to CapConnect! 👋")
+    st.write(f'Welcome *{name}*')
+    st.sidebar.success("Select a page above.")
+
+    st.markdown(
+        """
+        CapConnect is a tool for assisting cancer patients and their families.
+    """
+    )
 home_page_md = """
 # Welcome to CapConnect!
 
@@ -39,3 +52,53 @@ Our goal is to enhance the overall experience for everyone involved in the cance
 """
 
 st.markdown(home_page_md)
+
+def med_staff_entry_page(name):
+    st.write("# Welcome to Medical CapConnect! 👋")
+    st.write(f'Welcome *{name}*')
+    st.title('Medical staff page')
+    st.sidebar.success("Select a page above.")
+
+    st.markdown(
+        """
+        CapConnect is a tool for assisting cancer patients and their families.
+    """
+    )
+
+
+st.set_page_config(
+    page_title="CapConnect",
+    # page_icon="👋",
+)
+
+
+with open('Database/users.yaml') as file:
+    config = yaml.load(file, Loader=SafeLoader)
+
+authenticator = Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+    config['preauthorized'],
+)
+
+
+
+name, authentication_status, username = authenticator.login('Login', 'main')
+if authentication_status:
+    authenticator.logout('Logout', 'main')
+    st.session_state["user_type"] = config['credentials']['usernames'][username]['user_type']
+    if st.session_state["user_type"] == 'user':
+        user_entry_page(name)
+    elif st.session_state["user_type"] == 'med_staff':
+        med_staff_entry_page(name)
+
+
+elif authentication_status == False:
+    st.error('Username/password is incorrect')
+
+elif authentication_status == None:
+    st.warning('Please enter your username and password')
+
+
